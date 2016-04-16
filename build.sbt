@@ -8,7 +8,7 @@ version := "1.0"
 scalaVersion := "2.11.8"
 
 /** Scalac parameters */
-scalacOptions ++= Seq("-feature", "-deprecation")
+scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
 
 /** Javac parameters */
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
@@ -24,3 +24,6 @@ libraryDependencies ++= Seq(
 
 /** Make sure to fork on run */
 fork in run := true
+
+/** Add resources to java library path */
+javaOptions in run += "-Djava.library.path=src/main/resources"
