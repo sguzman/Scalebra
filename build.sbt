@@ -19,7 +19,8 @@ resolvers += "Search Maven" at "https://repo1.maven.org/maven2/"
 /** Source Dependencies */
 libraryDependencies ++= Seq(
   "org.lwjgl.lwjgl" % "lwjgl_util"    % "2.9.3",
-  "org.slick2d"     % "slick2d-core"  % "1.0.1"
+  "org.slick2d"     % "slick2d-core"  % "1.0.1",
+  "org.apache.commons" % "commons-lang3" % "3.4"
 )
 
 /** Make sure to fork on run */
@@ -27,3 +28,6 @@ fork in run := true
 
 /** Add resources to java library path */
 javaOptions in run += "-Djava.library.path=src/main/resources"
+
+/** Copy dependencies to file */
+retrieveManaged := true
