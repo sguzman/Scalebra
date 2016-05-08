@@ -22,7 +22,10 @@ abstract class Entity(r: Float, g: Float, b: Float, var x: Float, var y: Float) 
   /**
     * Set the coordinates as a tuple
     */
-  def apply(i: Int, j: Int): Unit = (x, y) = (x.toFloat, y.toFloat)
+  def apply(i: Int, j: Int): Unit = {
+    x = i.toFloat
+    y = j.toFloat
+  }
 
   /**
     * For this game, I will hard code several things values, like the size of all
