@@ -1,6 +1,6 @@
-package org.github.sguzman.scala.game.scalebra.mvc.model.snake
+package org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake
 
-import org.github.sguzman.scala.game.scalebra.mvc.model.util.Tool
+import org.github.sguzman.scala.game.scalebra.mvc.model.util.ViewTool
 import org.github.sguzman.scala.game.scalebra.mvc.model.{Direction, Left}
 import scala.collection.mutable
 import scala.util.Random
@@ -8,11 +8,11 @@ import scala.util.Random
 /**
   * @author Salvador Guzman - sguzman
   * @group Scalebra
-  * @version org.github.sguzman.scala.game.scalebra.mvc.model.snake
+  * @version org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake
   * @note This is the actual snake body. This will consist of several SnakePiece's
   * @since 5/7/16 11:57 PM
   */
-class Snake(x: Int = Tool.midX, y: Int = Tool.midY) {
+class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   /** This is the direction the snake is moving in */
   var dir: Direction = Left()
 
@@ -84,6 +84,7 @@ class Snake(x: Int = Tool.midX, y: Int = Tool.midY) {
     * Was there a collision?
     *
     * @param coord Coordinate
+ *
     * @return Boolean
     */
   def hit(coord: (Int, Int)): Boolean = area.contains(coord)

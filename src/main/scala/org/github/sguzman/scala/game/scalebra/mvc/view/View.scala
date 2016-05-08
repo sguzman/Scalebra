@@ -1,7 +1,7 @@
 package org.github.sguzman.scala.game.scalebra.mvc.view
 
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
-import org.github.sguzman.scala.game.scalebra.mvc.model.snake.Snake
+import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake.Snake
 import org.lwjgl.opengl.{DisplayMode, Display, GL11}
 
 /**

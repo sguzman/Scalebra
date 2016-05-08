@@ -13,7 +13,7 @@ import scala.util.Random
   *
   * @since 5/7/16 9:55 PM
   */
-object Tool {
+object ViewTool {
   /** Initiate random engine with current time */
   Random.setSeed(System.currentTimeMillis())
 
