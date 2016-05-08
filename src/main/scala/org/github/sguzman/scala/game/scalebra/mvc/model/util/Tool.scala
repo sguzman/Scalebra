@@ -13,15 +13,9 @@ import scala.util.Random
   *
   * @since 5/7/16 9:55 PM
   */
-object RandTool {
+object Tool {
   /** Initiate random engine with current time */
   Random.setSeed(System.currentTimeMillis())
-
-  /** Divide width by 10 */
-  val ranModX = View.width / 10
-
-  /** Divide height by 10 */
-  val ranModY = View.height / 10
 
   /**
     * Random x-location between 0 and the width
@@ -29,7 +23,8 @@ object RandTool {
     * @return Int
     */
   def randX: Int = {
-    Random.nextInt(ranModX) * 10
+    /** Divide width by 10 */
+    Random.nextInt(View.width / 10) * 10
   }
 
   /**
@@ -38,6 +33,21 @@ object RandTool {
     * @return Int
     */
   def randY: Int = {
-    Random.nextInt(ranModY) * 10
+    /** Divide height by 10 */
+    Random.nextInt(View.height / 10) * 10
+  }
+
+  /**
+    * Return middle of screen's width
+    */
+  def midX: Int = {
+    View.width / 2
+  }
+
+  /**
+    * Return middle of screen's height
+    */
+  def midY: Int = {
+    View.height / 2
   }
 }
