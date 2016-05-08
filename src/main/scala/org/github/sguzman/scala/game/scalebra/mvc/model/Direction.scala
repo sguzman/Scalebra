@@ -9,9 +9,28 @@ package org.github.sguzman.scala.game.scalebra.mvc.model
   *
   * @since 5/7/16 10:26 PM
   */
-sealed abstract case class Direction()
+sealed abstract case class Direction(val x: Int = 0) {
+  /**
+    * Add two direction together. If the sum of their x's are 0, return the
+    * current direction. If it is not, return the new direction
+    *
+    * @param d Direction
+    * @return Direction
+    */
+  def +(d: Direction): Direction = {
+    if (this.x + d.x == 0) {
+      this
+    } else {
+      d
+    }
+  }
+}
 
-case class Up() extends Direction
-case class Left() extends Direction
-case class Right() extends Direction
-case class Down() extends Direction
+/**
+  * The value of the variable line up with the opposite direction. If you add
+  * opposite sides, it will equal to 0.
+  */
+case class Up() extends Direction(1)
+case class Left() extends Direction(-2)
+case class Right() extends Direction(2)
+case class Down() extends Direction(-1)
