@@ -20,7 +20,7 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
     * This will contain all the area that the snake covers. This will be a set
     * of all the directions of the snake.
     */
-  val area = mutable.HashSet.empty[(Int,Int)]
+  var area = mutable.HashSet.empty[(Int,Int)]
 
   /**
     * The snake's body will receive a different color depending on it's place. But
@@ -46,9 +46,20 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   def render(): Unit = snake foreach (_.render())
 
   /**
+    * Map the location of each snake body piece into the hash set. If the number,
+    * of entries are less than the number of bodies, that means we have a intra-
+    * snake collision
+    */
+  def areaUpdate(): Unit = {
+    area.clear()
+
+    area ++= snake map (_.coor)
+  }
+
+  /**
     * Trickle down the locations of each piece to each successive piece
     */
-  def transferLoc(): Unit = {
+  private def transferLoc(): Unit = {
     if (snake.length == 1) {
       return
     }
@@ -56,8 +67,8 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
     /**
       * Pass down all locations. Nice and succinct :)
       */
-    snake.init map (s => (s.x, s.y)) zip snake.tail foreach {
-      case ((i, j), p) => (p.x, p.y) = (i, j)
+    snake.init map (_.coor) zip snake.tail foreach {
+      case ((i, j), p) => p(i, j)
     }
   }
 

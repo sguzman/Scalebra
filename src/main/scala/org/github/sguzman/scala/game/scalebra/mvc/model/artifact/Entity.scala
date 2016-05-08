@@ -13,6 +13,18 @@ import org.lwjgl.opengl.GL11
   */
 abstract class Entity(r: Float, g: Float, b: Float, var x: Float, var y: Float) {
   /**
+    * Return the coordinates in a tuple
+    *
+    * @return (Int, Int)
+    */
+  def coor: (Int, Int) = (x.toInt, y.toInt)
+
+  /**
+    * Set the coordinates as a tuple
+    */
+  def apply(i: Int, j: Int): Unit = (x, y) = (x.toFloat, y.toFloat)
+
+  /**
     * For this game, I will hard code several things values, like the size of all
     * artifacts.
     */
