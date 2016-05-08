@@ -22,7 +22,7 @@ case class Food() extends Entity(Food.r, Food.g, Food.b, ViewTool.randX, ViewToo
   }
 }
 
-object Food extends Entity(Food.r, Food.g, Food.b, ViewTool.randX, ViewTool.randY) {
+object Food {
   /** Static colors for food */
   val r = 1.0f
   val g = 1.0f
