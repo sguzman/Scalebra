@@ -14,7 +14,10 @@ scalacOptions ++= Seq("-feature", "-unchecked", "-deprecation", "-encoding", "ut
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
 /** Resolver */
-resolvers += "Search Maven" at "https://repo1.maven.org/maven2/"
+resolvers ++= Seq(
+  "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+  "Search Maven" at "https://repo1.maven.org/maven2/"
+)
 
 /** Source Dependencies */
 libraryDependencies ++= Seq(
