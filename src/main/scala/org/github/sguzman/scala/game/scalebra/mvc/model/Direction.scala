@@ -9,7 +9,7 @@ package org.github.sguzman.scala.game.scalebra.mvc.model
   *
   * @since 5/7/16 10:26 PM
   */
-sealed abstract case class Direction(val x: Int = 0) {
+sealed abstract class Direction(val x: Int = 0) {
   /**
     * Add two direction together. If the sum of their x's are 0, return the
     * current direction. If it is not, return the new direction
