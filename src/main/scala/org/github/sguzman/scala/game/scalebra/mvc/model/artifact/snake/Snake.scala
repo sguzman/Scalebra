@@ -49,7 +49,7 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
     * Trickle down the locations of each piece to each successive piece
     */
   def transferLoc(): Unit = {
-    if (snake.isEmpty) {
+    if (snake.length == 1) {
       return
     }
 
