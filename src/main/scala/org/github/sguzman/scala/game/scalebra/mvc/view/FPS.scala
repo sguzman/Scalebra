@@ -1,7 +1,6 @@
 package org.github.sguzman.scala.game.scalebra.mvc.view
 
 import org.lwjgl.Sys
-import org.lwjgl.opengl.Display
 
 /**
   * @author Salvador Guzman - sguzman
@@ -19,6 +18,14 @@ object FPS {
   var lastFPS: Long = 0L
 
   /**
+    * Initialize FPS subsystem
+    */
+  def init(): Unit = {
+    getDelta
+    lastFPS = getTime
+  }
+
+  /**
     * Get the accurate system time
     *
     * @return The system time in milliseconds
@@ -33,7 +40,7 @@ object FPS {
   def updateFPS(): Unit = {
     if (getTime - lastFPS > 1000) {
 
-      Display.setTitle("FPS: " + fps)
+      View.title("FPS: " + fps)
       fps = 0
       lastFPS += 1000
     }
