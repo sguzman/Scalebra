@@ -1,8 +1,13 @@
 package org.github.sguzman.scala.game.scalebra.mvc.view
 
+import java.util.concurrent.Executors
+
+import akka.actor.Actor
+import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
+import org.github.sguzman.scala.game.scalebra.mvc.model.Direction
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake.Snake
-import org.lwjgl.opengl.{DisplayMode, Display, GL11}
+import org.lwjgl.opengl.{Display, DisplayMode, GL11}
 
 /**
   * @author Salvador Guzman
@@ -18,15 +23,15 @@ import org.lwjgl.opengl.{DisplayMode, Display, GL11}
   * custom.created: 5/5/16 2:29 AM
   * @since 5/5/16
   */
-class View extends Runnable {
+class View extends Actor {
   /** Contains the snake and its body */
   val snake = new Snake
 
   /** Food */
-  val food = Food()
+  var food = Food()
 
   /**
-    *
+    * Render entire scene
     */
   def render(): Unit = {
     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
@@ -34,35 +39,66 @@ class View extends Runnable {
     food.render()
   }
 
-  /**
-    * Main logic of rendering thread
-    */
-  override def run() = {
-    View.initLWJGL()
-    View.initGL()
-    FPS.init()
-    while (!Display.isCloseRequested) {
-      View.paused.synchronized {
-        do {
-          FPS.updateFPS()
-          render()
-        } while (View.paused)
+  class RenderTh extends Runnable {
+      /**
+      * Main logic of rendering thread
+      */
+     def run() = {
+      while (!Display.isCloseRequested) {
+        View.paused.synchronized {
+          do {
+            FPS.updateFPS()
+            render()
+          } while (View.paused)
+        }
+        Display.update(false)
+        Display.sync(60)
       }
-      Display.update(false)
-      Display.sync(60)
     }
-    Display.destroy()
  }
+
+  /**
+    * Akka actor mailbox for View subsystem
+    */
+  override def receive: Unit = {
+    case Start =>
+      View.init()
+      View.rendTh.execute(new RenderTh)
+    case Stop =>
+      Display.destroy()
+      View.rendTh.shutdown()
+    case dir: Direction => if(!View.paused) snake.setDir(dir)
+    case pause.TogglePause => View.pauseToggle()
+  }
 }
 
 object View {
+  /** Rendering thread */
+  val rendTh = Executors.newSingleThreadExecutor()
+
   /** Is the game paused? */
-  var paused = false
+  private var paused = false
 
   /** Hard code width and height */
   val width = 800
   val height = 600
 
+  /** Contain entire grid */
+  val allArea = Set(for (j <- 0 to height by 10; i <- 0 to width)
+    yield (i,j): _*)
+
+  /**
+    * Init all subsystems
+    */
+  def init(): Unit = {
+    View.initLWJGL()
+    View.initGL()
+    FPS.init()
+  }
+
+  /**
+    * Initiate JWJGL subsystem
+    */
   def initLWJGL(): Unit = {
     Display.setDisplayMode(new DisplayMode(800, 600))
     Display.create()
