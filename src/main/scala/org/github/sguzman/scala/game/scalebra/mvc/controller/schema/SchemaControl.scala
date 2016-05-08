@@ -9,5 +9,9 @@ package org.github.sguzman.scala.game.scalebra.mvc.controller.schema
   * @since 5/8/16 1:01 AM
   */
 trait SchemaControl {
+  /**
+    * Take some action based on the key pressed.
+    * @param key Keyboard pressed
+    */
   def action(key: Int): Unit
 }
