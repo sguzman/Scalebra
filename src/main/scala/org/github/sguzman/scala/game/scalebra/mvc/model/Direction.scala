@@ -11,7 +11,7 @@ package org.github.sguzman.scala.game.scalebra.mvc.model
   */
 sealed abstract case class Direction()
 
-case class Up()
-case class Left()
-case class Right()
-case class Down()
+case class Up() extends Direction
+case class Left() extends Direction
+case class Right() extends Direction
+case class Down() extends Direction
