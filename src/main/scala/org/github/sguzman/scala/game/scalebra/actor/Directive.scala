@@ -8,8 +8,7 @@ package org.github.sguzman.scala.game.scalebra.actor
   *       state classes here to be used for messages
   * @since 5/8/16 2:53 AM
   */
-abstract sealed case class Directive()
+abstract sealed class Directive()
 
 case class Start() extends Directive
-case class Restart() extends Directive
 case class Stop() extends Directive
