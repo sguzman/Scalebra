@@ -1,6 +1,6 @@
 package org.github.sguzman.scala.game.scalebra.mvc.controller.schema
 
-import org.github.sguzman.scala.game.scalebra.mvc.model.{Down, Left, Right, Up, Direction}
+import org.github.sguzman.scala.game.scalebra.mvc.model.{Model, Down, Left, Right, Up, Direction}
 import org.github.sguzman.scala.game.scalebra.mvc.view.View
 import org.lwjgl.input.Keyboard
 
@@ -37,6 +37,8 @@ class ControlS extends SchemaControl {
       case _ => None
     }
 
-
+    if (dir.isDefined) {
+      Model.dir = dir.get
+    }
   }
 }
