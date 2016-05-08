@@ -1,6 +1,7 @@
 package org.github.sguzman.scala.game.scalebra.mvc.controller.schema
 
 import org.github.sguzman.scala.game.scalebra.mvc.model.{Down, Left, Right, Up, Direction}
+import org.github.sguzman.scala.game.scalebra.mvc.view.View
 import org.lwjgl.input.Keyboard
 
 /**
@@ -21,11 +22,18 @@ class ControlS extends SchemaControl {
       return
     }
 
-    val dir: Option[Direction] = Keyboard.getEventKey match {
+    /** Get Event key */
+    val key = Keyboard.getEventKey
+
+    val dir: Option[Direction] = key match {
       case Keyboard.KEY_W => Some(Up())
       case Keyboard.KEY_S => Some(Down())
       case Keyboard.KEY_L => Some(Left())
       case Keyboard.KEY_R => Some(Right())
+      case Keyboard.KEY_P => {
+        View.pauseToggle()
+        None
+      }
       case _ => None
     }
 

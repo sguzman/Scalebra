@@ -42,8 +42,12 @@ class View extends Runnable {
     View.initGL()
     FPS.init()
     while (!Display.isCloseRequested) {
-      FPS.updateFPS()
-      render()
+      View.paused.synchronized {
+        do {
+          FPS.updateFPS()
+          render()
+        } while (View.paused)
+      }
       Display.update(false)
       Display.sync(60)
     }
@@ -52,6 +56,9 @@ class View extends Runnable {
 }
 
 object View {
+  /** Is the game paused? */
+  var paused = false
+
   /** Hard code width and height */
   val width = 800
   val height = 600
@@ -74,7 +81,26 @@ object View {
   /**
     * Set title text
     */
-  def title(msg: String): Unit = {
-    Display.setTitle(msg)
+  def title(msg: String): Unit = Display.setTitle(msg)
+
+  /**
+    * Pause the game
+    */
+  def pause(): Unit = paused.synchronized {
+    paused = true
+  }
+
+  /**
+    * Unpause the game
+    */
+  def unPause(): Unit = paused.synchronized {
+    paused = false
+  }
+
+  /**
+    * Toggle pause of the game
+    */
+  def pauseToggle(): Unit = paused.synchronized {
+    paused = !paused
   }
 }
