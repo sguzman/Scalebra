@@ -1,7 +1,8 @@
 package org.github.sguzman.scala.game.scalebra.mvc.controller.schema
 
-import org.github.sguzman.scala.game.scalebra.mvc.model.{Model, Down, Left, Right, Up, Direction}
-import org.github.sguzman.scala.game.scalebra.mvc.view.View
+import org.github.sguzman.scala.game.scalebra.Scalebra
+import org.github.sguzman.scala.game.scalebra.mvc.model.{Direction, Down, Left, Right, Up}
+import org.github.sguzman.scala.game.scalebra.mvc.view.pause.TogglePause
 import org.lwjgl.input.Keyboard
 
 /**
@@ -30,15 +31,14 @@ class ControlS extends SchemaControl {
       case Keyboard.KEY_S => Some(Down())
       case Keyboard.KEY_L => Some(Left())
       case Keyboard.KEY_R => Some(Right())
-      case Keyboard.KEY_P => {
-        View.pauseToggle()
+      case Keyboard.KEY_P =>
+        Scalebra.viewAc ! TogglePause
         None
-      }
       case _ => None
     }
 
     if (dir.isDefined) {
-      Model.dir = dir.get
+      Scalebra.viewAc ! dir.get
     }
   }
 }
