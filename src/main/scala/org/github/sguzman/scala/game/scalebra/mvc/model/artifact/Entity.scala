@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11
   *       this class.
   * @since 5/6/16 8:00 PM
   */
-abstract class Entity(r: Float, g: Float, b: Float, x: Float, y: Float) {
+abstract class Entity(r: Float, g: Float, b: Float, var x: Float, var y: Float) {
   /**
     * For this game, I will hard code several things values, like the size of all
     * artifacts.
