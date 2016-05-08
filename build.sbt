@@ -20,7 +20,8 @@ resolvers += "Search Maven" at "https://repo1.maven.org/maven2/"
 libraryDependencies ++= Seq(
   "org.lwjgl.lwjgl" % "lwjgl_util"    % "2.9.3",
   "org.slick2d"     % "slick2d-core"  % "1.0.1",
-  "org.apache.commons" % "commons-lang3" % "3.4"
+  "org.apache.commons" % "commons-lang3" % "3.4",
+  "com.typesafe.akka" % "akka-actor_2.11" % "2.4.4"
 )
 
 /** Make sure to fork on run */
