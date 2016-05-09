@@ -1,6 +1,10 @@
 package org.github.sguzman.scala.game.scalebra.mvc.controller
 
-import org.github.sguzman.scala.game.scalebra.mvc.controller.schema.SchemaControl
+import java.util.concurrent.Executors
+
+import akka.actor.Actor
+import org.github.sguzman.scala.game.scalebra.actor.{Stop, Start}
+import org.github.sguzman.scala.game.scalebra.mvc.controller.schema.{SchemaControl, ControlS}
 import org.lwjgl.input.Keyboard
 
 /**
@@ -14,13 +18,25 @@ import org.lwjgl.input.Keyboard
   *       up.
   * @since 5/7/16 9:29 PM
   */
-class Input(control: SchemaControl) extends Runnable {
-  override def run(): Unit = {
-    while (true) {
-      while (Keyboard.next()) {
-        control.action()
+class Input(control: SchemaControl = new ControlS) extends Actor {
+   class InputTh extends Runnable {
+    override def run(): Unit = {
+      while (true) {
+        while (Keyboard.next()) {
+          control.action()
+        }
+        wait(0, 500)
       }
-      wait(0, 500)
     }
   }
+
+  override def receive: Receive = {
+    case Start => Input.inputTh.execute(new InputTh)
+    case Stop => Input.inputTh.shutdown()
+  }
+}
+
+object Input {
+  /** Input thread */
+  val inputTh = Executors.newSingleThreadExecutor()
 }

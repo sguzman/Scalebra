@@ -1,5 +1,6 @@
 package org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake
 
+import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
 import org.github.sguzman.scala.game.scalebra.mvc.model.util.ViewTool
 import org.github.sguzman.scala.game.scalebra.mvc.model.{Direction, Left}
 import scala.collection.mutable
@@ -14,13 +15,13 @@ import scala.util.Random
   */
 class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   /** This is the direction the snake is moving in */
-  var dir: Direction = Left()
+  private var dir: Direction = Left()
 
   /**
     * This will contain all the area that the snake covers. This will be a set
     * of all the directions of the snake.
     */
-  var area = mutable.HashSet.empty[(Int,Int)]
+  private var area = mutable.HashSet.empty[(Int,Int)]
 
   /**
     * The snake's body will receive a different color depending on it's place. But
@@ -46,11 +47,27 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   def render(): Unit = snake foreach (_.render())
 
   /**
+    * Collsion logic - check if collision occurred
+    *
+    * @param f: Food
+    */
+  def collision(f: Food): Boolean = {
+    areaUpdate()
+
+    if (hit) {
+      return false
+    }
+
+    foodHit(f)
+    true
+  }
+
+  /**
     * Map the location of each snake body piece into the hash set. If the number,
     * of entries are less than the number of bodies, that means we have a intra-
     * snake collision
     */
-  def areaUpdate(): Unit = {
+  private def areaUpdate(): Unit = {
     area.clear()
 
     area ++= snake map (_.coor)
@@ -86,7 +103,7 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   /**
     * Got a food event
     */
-  def grow(): Unit = {
+  private def grow(): Unit = {
     /** It doesn't matter what x & y are. They will be set eventually. */
     snake += new SnakePiece(rand.nextFloat(), rand.nextFloat(), rand.nextFloat())
   }
@@ -95,8 +112,39 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
     * Was there a collision?
     *
     * @param coord Coordinate
- *
+    *
     * @return Boolean
     */
-  def hit(coord: (Int, Int)): Boolean = area.contains(coord)
+  private def hit(coord: (Int, Int)): Boolean = area.contains(coord)
+
+  /**
+    * Was there a collision with any of the snake body pieces? If any body pieces
+    * overlap, the area projected on the screen should be less than the number of
+    * body pieces.
+    *
+    * @return Unit
+    */
+  private def foodHit(s: Food): Unit = {
+    if (hit(s.coor)) {
+      grow()
+    }
+  }
+
+  /**
+    * Was there a collision with any of the snake body pieces? If any body pieces
+    * overlap, the area projected on the screen should be less than the number of
+    * body pieces.
+    *
+    * @return Boolean
+    */
+    def foodHit(s: Food): Boolean = hit(s.coor)
+
+  /**
+    * Was there a collision with any of the snake body pieces? If any body pieces
+    * overlap, the area projected on the screen should be less than the number of
+    * body pieces.
+    *
+    * @return Boolean
+    */
+  def hit: Boolean = snake.length != area.size
 }
