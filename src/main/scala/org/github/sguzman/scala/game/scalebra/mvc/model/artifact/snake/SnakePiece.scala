@@ -11,5 +11,5 @@ import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Entity
   *       be overridden anyway.
   * @since 5/7/16 11:46 PM
   */
-private class SnakePiece(r: Float, g: Float, b: Float, override var x: Float = 0, override var y: Float = 0)
-  extends Entity(r, g, b, x, y)
+private class SnakePiece(r: Float, g: Float, b: Float)
+  extends Entity(r, g, b, 0, 0)
