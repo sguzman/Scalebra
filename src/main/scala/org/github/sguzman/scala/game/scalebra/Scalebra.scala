@@ -21,11 +21,11 @@ object Scalebra {
   val system = ActorSystem("Scalebra")
 
   /** Supervisor actor */
-  val supervisor = system.actorOf(Props[Scalebra])
+  val supervisor = system.actorOf(Props[Scalebra], "Root")
   /** View rendering actor */
   val viewAc = system.actorOf(Props[View], "View")
   /** Input handling actor */
-  val inputAc = system.actorOf(Props[Input], "View")
+  val inputAc = system.actorOf(Props[Input], "Input")
 
   /**
     * Driver program for entire game
