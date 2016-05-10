@@ -2,7 +2,7 @@ package org.github.sguzman.scala.game.scalebra.mvc.view
 
 import java.util.concurrent.Executors
 
-import akka.actor.Actor
+import akka.actor.{Actor, ActorLogging}
 import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
 import org.github.sguzman.scala.game.scalebra.mvc.model.Direction
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
@@ -23,7 +23,7 @@ import org.lwjgl.opengl.{Display, DisplayMode, GL11}
   * custom.created: 5/5/16 2:29 AM
   * @since 5/5/16
   */
-class View extends Actor {
+class View extends Actor with ActorLogging {
   /** Contains the snake and its body */
   val snake = new Snake
 
@@ -45,12 +45,10 @@ class View extends Actor {
       */
      def run() = {
       while (!Display.isCloseRequested) {
-        View.paused.synchronized {
-          do {
-            FPS.updateFPS()
-            render()
-          } while (View.paused)
-        }
+        do {
+          FPS.updateFPS()
+          render()
+        } while (View.paused)
         Display.update(false)
         Display.sync(60)
       }
@@ -60,11 +58,11 @@ class View extends Actor {
   /**
     * Akka actor mailbox for View subsystem
     */
-  override def receive: Unit = {
-    case Start =>
+  override def receive: Actor.Receive = {
+    case _: Start =>
       View.init()
       View.rendTh.execute(new RenderTh)
-    case Stop =>
+    case _: Stop =>
       Display.destroy()
       View.rendTh.shutdown()
     case dir: Direction => if(!View.paused) snake.setDir(dir)
@@ -77,15 +75,15 @@ object View {
   val rendTh = Executors.newSingleThreadExecutor()
 
   /** Is the game paused? */
-  private var paused = false
+  @volatile private var paused = false
 
   /** Hard code width and height */
   val width = 800
   val height = 600
 
   /** Contain entire grid */
-  val allArea = Set(for (j <- 0 to height by 10; i <- 0 to width)
-    yield (i,j): _*)
+  val allArea = (for (j <- 0 to (height / 10); i <- 0 to (width / 10))
+    yield (i,j)).toSet
 
   /**
     * Init all subsystems
@@ -122,21 +120,15 @@ object View {
   /**
     * Pause the game
     */
-  def pause(): Unit = paused.synchronized {
-    paused = true
-  }
+  def pause(): Unit = paused = true
 
   /**
     * Unpause the game
     */
-  def unPause(): Unit = paused.synchronized {
-    paused = false
-  }
+  def unPause(): Unit = paused = false
 
   /**
     * Toggle pause of the game
     */
-  def pauseToggle(): Unit = paused.synchronized {
-    paused = !paused
-  }
+  def pauseToggle(): Unit = paused = !paused
 }
