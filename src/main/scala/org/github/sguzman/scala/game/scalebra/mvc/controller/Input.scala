@@ -2,7 +2,7 @@ package org.github.sguzman.scala.game.scalebra.mvc.controller
 
 import java.util.concurrent.Executors
 
-import akka.actor.Actor
+import akka.actor.{ActorLogging, Actor}
 import org.github.sguzman.scala.game.scalebra.actor.{Stop, Start}
 import org.github.sguzman.scala.game.scalebra.mvc.controller.schema.{SchemaControl, ControlS}
 import org.lwjgl.input.Keyboard
@@ -18,7 +18,8 @@ import org.lwjgl.input.Keyboard
   *       up.
   * @since 5/7/16 9:29 PM
   */
-class Input(control: SchemaControl = new ControlS) extends Actor {
+class Input(control: SchemaControl = new ControlS) extends Actor
+  with ActorLogging {
    class InputTh extends Runnable {
     override def run(): Unit = {
       while (true) {
