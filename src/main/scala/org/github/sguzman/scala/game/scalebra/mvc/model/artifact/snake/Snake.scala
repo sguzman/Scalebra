@@ -33,12 +33,11 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
   /**
     * This will list will contain the entire snake
     */
-  val snake = mutable.ArrayBuffer.empty[SnakePiece]
+  private val snake = mutable.ArrayBuffer.empty[SnakePiece]
   snake += new SnakePiece(
     rand.nextFloat(),
     rand.nextFloat(),
-    rand.nextFloat(),
-    x, y
+    rand.nextFloat()
   )
 
   /**
@@ -137,7 +136,7 @@ class Snake(x: Int = ViewTool.midX, y: Int = ViewTool.midY) {
     *
     * @return Boolean
     */
-    def foodHit(s: Food): Boolean = hit(s.coor)
+  def foodHitCheck(s: Food): Boolean = hit(s.coor)
 
   /**
     * Was there a collision with any of the snake body pieces? If any body pieces
