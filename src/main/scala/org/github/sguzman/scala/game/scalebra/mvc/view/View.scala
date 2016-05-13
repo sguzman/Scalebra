@@ -3,7 +3,9 @@ package org.github.sguzman.scala.game.scalebra.mvc.view
 import java.util.concurrent.Executors
 
 import akka.actor.{Actor, ActorLogging}
+import org.github.sguzman.scala.game.scalebra.Scalebra
 import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
+import org.github.sguzman.scala.game.scalebra.util.log.L
 import org.github.sguzman.scala.game.scalebra.mvc.model.Direction
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake.Snake
@@ -44,14 +46,17 @@ class View extends Actor with ActorLogging {
       * Main logic of rendering thread
       */
      def run() = {
-      while (!Display.isCloseRequested) {
-        do {
-          FPS.updateFPS()
-          render()
-        } while (View.paused)
-        Display.update(false)
-        Display.sync(60)
-      }
+       View.init()
+       L.i("Starting up input thread", "RenderThread")
+
+       while (!Display.isCloseRequested) {
+         do {
+           FPS.updateFPS()
+           render()
+         } while (View.paused)
+           Display.update(false)
+           Display.sync(60)
+         }
     }
  }
 
@@ -60,13 +65,20 @@ class View extends Actor with ActorLogging {
     */
   override def receive: Actor.Receive = {
     case _: Start =>
-      View.init()
+      L.i("Start object received... Init View thread and starting Input", "View")
       View.rendTh.execute(new RenderTh)
+      Scalebra.inputAc ! Start()
     case _: Stop =>
+      L.i("Stop object received... Stop View thread and stop Input", "View")
+      Scalebra.inputAc ! Stop
       Display.destroy()
       View.rendTh.shutdown()
-    case dir: Direction => if(!View.paused) snake.setDir(dir)
-    case pause.TogglePause => View.pauseToggle()
+    case dir: Direction =>
+      L.d("Direction received: {}", "View", dir)
+      if(!View.paused) snake.setDir(dir)
+    case pause.TogglePause =>
+      L.d("Toggle pause", "View")
+      View.pauseToggle()
   }
 }
 
@@ -89,6 +101,7 @@ object View {
     * Init all subsystems
     */
   def init(): Unit = {
+    L.i("Init all display systems", "View")
     View.initLWJGL()
     View.initGL()
     FPS.init()
@@ -98,6 +111,7 @@ object View {
     * Initiate JWJGL subsystem
     */
   def initLWJGL(): Unit = {
+    L.i("Init JWJGL", "View")
     Display.setDisplayMode(new DisplayMode(800, 600))
     Display.create()
   }
@@ -106,6 +120,7 @@ object View {
     * Initialize OpenGL draw subsystem
     */
   def initGL(): Unit = {
+    L.i("Init OpenGL", "View")
     GL11.glMatrixMode(GL11.GL_PROJECTION)
     GL11.glLoadIdentity()
     GL11.glOrtho(0.0f, width, 0.0f, height, 1.0f, -1.0f)

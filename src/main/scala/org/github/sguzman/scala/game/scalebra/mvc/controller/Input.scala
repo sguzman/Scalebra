@@ -2,9 +2,10 @@ package org.github.sguzman.scala.game.scalebra.mvc.controller
 
 import java.util.concurrent.Executors
 
-import akka.actor.{ActorLogging, Actor}
-import org.github.sguzman.scala.game.scalebra.actor.{Stop, Start}
-import org.github.sguzman.scala.game.scalebra.mvc.controller.schema.{SchemaControl, ControlS}
+import akka.actor.{Actor, ActorLogging}
+import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
+import org.github.sguzman.scala.game.scalebra.mvc.controller.schema.ControlS
+import org.github.sguzman.scala.game.scalebra.util.log.L
 import org.lwjgl.input.Keyboard
 
 /**
@@ -18,10 +19,12 @@ import org.lwjgl.input.Keyboard
   *       up.
   * @since 5/7/16 9:29 PM
   */
-class Input(control: SchemaControl = new ControlS) extends Actor
+class Input extends Actor
   with ActorLogging {
+  val control = new ControlS
    class InputTh extends Runnable {
     override def run(): Unit = {
+      L.i("Input thread running...", "Input")
       while (true) {
         while (Keyboard.next()) {
           control.action()
@@ -32,8 +35,12 @@ class Input(control: SchemaControl = new ControlS) extends Actor
   }
 
   override def receive: Receive = {
-    case Start => Input.inputTh.execute(new InputTh)
-    case Stop => Input.inputTh.shutdown()
+    case _: Start =>
+      L.i("Start up input thread", "Input")
+      Input.inputTh.execute(new InputTh)
+    case _: Stop =>
+      L.i("Shutdown input thread", "Input")
+      Input.inputTh.shutdown()
   }
 }
 

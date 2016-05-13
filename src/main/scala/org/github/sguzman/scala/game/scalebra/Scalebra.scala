@@ -1,7 +1,8 @@
 package org.github.sguzman.scala.game.scalebra
 
-import akka.actor.{Actor, ActorSystem, Props}
-import org.github.sguzman.scala.game.scalebra.actor.{Stop, Start}
+import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
+import org.github.sguzman.scala.game.scalebra.util.log.L
 import org.github.sguzman.scala.game.scalebra.mvc.controller.Input
 import org.github.sguzman.scala.game.scalebra.mvc.view.View
 
@@ -33,17 +34,27 @@ object Scalebra {
     * @param args Array[String]
     */
   def main(args: Array[String]) = {
-    supervisor ! Start
+    L.i("Init System", "Scalebra")
+    supervisor ! Start()
+    while (true) {
+      //L.i("Looping", "Scalebra")
+    }
   }
 }
 
-class Scalebra extends Actor {
+/**
+  * Main actor class. This class will server as the supervisor for the actor
+  * system found in this project.
+  *
+  * For now, all it can do is start and stop the entire system.
+  */
+class Scalebra extends Actor with ActorLogging {
   override def receive: Receive = {
-    case Start =>
-      Scalebra.viewAc ! Start
-      Scalebra.inputAc ! Start
-    case Stop =>
-      Scalebra.viewAc ! Stop
-      Scalebra.inputAc ! Stop
+    case _: Start =>
+      L.i("Start object received... starting View actor", "Scalebra")
+      Scalebra.viewAc ! Start()
+    case _: Stop =>
+      L.i("Stop object received... shutting it down. Shutting it all down!!!", "Scalebra")
+      Scalebra.viewAc ! Stop()
   }
 }

@@ -1,6 +1,6 @@
 package org.github.sguzman.scala.game.scalebra.util.log.help
 
-import com.acme.util.config.values.App
+import org.github.sguzman.scala.game.scalebra.util.config.values.App
 
 /**
   * This case class holds all config information that will be included in log

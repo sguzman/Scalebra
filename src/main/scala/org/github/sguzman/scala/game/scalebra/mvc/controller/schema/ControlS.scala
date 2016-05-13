@@ -3,6 +3,7 @@ package org.github.sguzman.scala.game.scalebra.mvc.controller.schema
 import org.github.sguzman.scala.game.scalebra.Scalebra
 import org.github.sguzman.scala.game.scalebra.mvc.model.{Direction, Down, Left, Right, Up}
 import org.github.sguzman.scala.game.scalebra.mvc.view.pause.TogglePause
+import org.github.sguzman.scala.game.scalebra.util.log.L
 import org.lwjgl.input.Keyboard
 
 /**
@@ -19,6 +20,7 @@ class ControlS extends SchemaControl {
     * methods directly.
     */
   override def action(): Unit = {
+    L.i("Key event seen", "Input")
     if (!Keyboard.getEventKeyState) {
       return
     }
@@ -27,11 +29,20 @@ class ControlS extends SchemaControl {
     val key = Keyboard.getEventKey
 
     val dir: Option[Direction] = key match {
-      case Keyboard.KEY_W => Some(Up())
-      case Keyboard.KEY_S => Some(Down())
-      case Keyboard.KEY_L => Some(Left())
-      case Keyboard.KEY_R => Some(Right())
+      case Keyboard.KEY_W =>
+        L.i("Up", "Input")
+        Some(Up())
+      case Keyboard.KEY_S =>
+        L.i("Down", "Input")
+        Some(Down())
+      case Keyboard.KEY_L =>
+        L.i("Left", "Input")
+        Some(Left())
+      case Keyboard.KEY_R =>
+        L.i("Right", "Input")
+        Some(Right())
       case Keyboard.KEY_P =>
+        L.i("P", "Input")
         Scalebra.viewAc ! TogglePause
         None
       case _ => None
