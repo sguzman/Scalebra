@@ -1,8 +1,15 @@
 package org.github.sguzman.scala.game.scalebra.mvc.view
 
+import java.util.concurrent.Executors
+
+import akka.actor.{Actor, ActorLogging}
+import org.github.sguzman.scala.game.scalebra.Scalebra
+import org.github.sguzman.scala.game.scalebra.actor.{Start, Stop}
+import org.github.sguzman.scala.game.scalebra.util.log.L
+import org.github.sguzman.scala.game.scalebra.mvc.model.Direction
 import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.Food
-import org.github.sguzman.scala.game.scalebra.mvc.model.snake.Snake
-import org.lwjgl.opengl.{DisplayMode, Display, GL11}
+import org.github.sguzman.scala.game.scalebra.mvc.model.artifact.snake.Snake
+import org.lwjgl.opengl.{Display, DisplayMode, GL11}
 
 /**
   * @author Salvador Guzman
@@ -18,15 +25,15 @@ import org.lwjgl.opengl.{DisplayMode, Display, GL11}
   * custom.created: 5/5/16 2:29 AM
   * @since 5/5/16
   */
-class View extends Runnable {
+class View extends Actor with ActorLogging {
   /** Contains the snake and its body */
   val snake = new Snake
 
   /** Food */
-  val food = Food()
+  var food = Food()
 
   /**
-    *
+    * Render entire scene
     */
   def render(): Unit = {
     GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
@@ -34,29 +41,77 @@ class View extends Runnable {
     food.render()
   }
 
-  /**
-    * Main logic of rendering thread
-    */
-  override def run() = {
-    View.initLWJGL()
-    View.initGL()
-    FPS.init()
-    while (!Display.isCloseRequested) {
-      FPS.updateFPS()
-      render()
-      Display.update(false)
-      Display.sync(60)
+  class RenderTh extends Runnable {
+      /**
+      * Main logic of rendering thread
+      */
+     def run() = {
+       View.init()
+       L.i("Starting up input thread", "RenderThread")
+
+       while (!Display.isCloseRequested) {
+         do {
+           FPS.updateFPS()
+           render()
+         } while (View.paused)
+           Display.update(false)
+           Display.sync(60)
+         }
     }
-    Display.destroy()
  }
+
+  /**
+    * Akka actor mailbox for View subsystem
+    */
+  override def receive: Actor.Receive = {
+    case _: Start =>
+      L.i("Start object received... Init View thread and starting Input", "View")
+      View.rendTh.execute(new RenderTh)
+      Scalebra.inputAc ! Start()
+    case _: Stop =>
+      L.i("Stop object received... Stop View thread and stop Input", "View")
+      Scalebra.inputAc ! Stop
+      Display.destroy()
+      View.rendTh.shutdown()
+    case dir: Direction =>
+      L.d("Direction received: {}", "View", dir)
+      if(!View.paused) snake.setDir(dir)
+    case pause.TogglePause =>
+      L.d("Toggle pause", "View")
+      View.pauseToggle()
+  }
 }
 
 object View {
+  /** Rendering thread */
+  val rendTh = Executors.newSingleThreadExecutor()
+
+  /** Is the game paused? */
+  @volatile private var paused = false
+
   /** Hard code width and height */
   val width = 800
   val height = 600
 
+  /** Contain entire grid */
+  val allArea = (for (j <- 0 to (height / 10); i <- 0 to (width / 10))
+    yield (i,j)).toSet
+
+  /**
+    * Init all subsystems
+    */
+  def init(): Unit = {
+    L.i("Init all display systems", "View")
+    View.initLWJGL()
+    View.initGL()
+    FPS.init()
+  }
+
+  /**
+    * Initiate JWJGL subsystem
+    */
   def initLWJGL(): Unit = {
+    L.i("Init JWJGL", "View")
     Display.setDisplayMode(new DisplayMode(800, 600))
     Display.create()
   }
@@ -65,6 +120,7 @@ object View {
     * Initialize OpenGL draw subsystem
     */
   def initGL(): Unit = {
+    L.i("Init OpenGL", "View")
     GL11.glMatrixMode(GL11.GL_PROJECTION)
     GL11.glLoadIdentity()
     GL11.glOrtho(0.0f, width, 0.0f, height, 1.0f, -1.0f)
@@ -74,7 +130,20 @@ object View {
   /**
     * Set title text
     */
-  def title(msg: String): Unit = {
-    Display.setTitle(msg)
-  }
+  def title(msg: String): Unit = Display.setTitle(msg)
+
+  /**
+    * Pause the game
+    */
+  def pause(): Unit = paused = true
+
+  /**
+    * Unpause the game
+    */
+  def unPause(): Unit = paused = false
+
+  /**
+    * Toggle pause of the game
+    */
+  def pauseToggle(): Unit = paused = !paused
 }
