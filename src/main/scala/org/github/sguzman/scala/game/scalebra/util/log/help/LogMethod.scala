@@ -1,4 +1,4 @@
-package org.github.sguzman.scala.game.scalebra.log.help
+package org.github.sguzman.scala.game.scalebra.util.log.help
 
 import org.pmw.tinylog.Logger
 

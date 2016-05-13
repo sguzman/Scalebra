@@ -1,10 +1,9 @@
-package org.github.sguzman.scala.game.scalebra.log
+package org.github.sguzman.scala.game.scalebra.util.log
 
-import com.acme.util.config.Reflect
-import com.acme.util.config.values.{App, Log}
-import com.acme.util.log.help._
 import org.apache.commons.lang3.StringUtils
-import org.github.sguzman.scala.game.scalebra.log.help.{Linfo, Lerror, Lwarn}
+import org.github.sguzman.scala.game.scalebra.util.config.Reflect
+import org.github.sguzman.scala.game.scalebra.util.config.values.{Locale, Log, App}
+import org.github.sguzman.scala.game.scalebra.util.log.help.{Ldebug, Ltrace, LogMethod, LogLevel, LogConfig, Linfo, Lerror, Lwarn}
 import org.pmw.tinylog.{Configurator, LoggingContext}
 
 /**
@@ -42,7 +41,7 @@ object L {
   Configurator.currentConfig()
     .formatPattern(Log.msg)
     .level(Log.level)
-    .locale(com.acme.util.config.values.Locale.locale)
+    .locale(Locale.locale)
     .activate()
 
   /**
